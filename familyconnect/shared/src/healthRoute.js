@@ -1,15 +1,11 @@
-// GET /health dùng chung cho mọi service.
+// GET /health dùng chung cho mọi service: { service, status: "UP" } (docs/api-contract.md mục 6).
 // Cách dùng: registerHealthRoute(app, 'community-service');
 
 import { ApiResponse } from './ApiResponse.js';
 
 /** Trả handler cho GET /health. */
 export function healthRoute(serviceName) {
-  return (req, res) => ApiResponse.ok(res, {
-    service: serviceName,
-    status: 'UP',
-    time: new Date().toISOString(),
-  });
+  return (req, res) => ApiResponse.ok(res, { service: serviceName, status: 'UP' });
 }
 
 /** Gắn GET /health vào app (hoặc router) kiểu Express. */

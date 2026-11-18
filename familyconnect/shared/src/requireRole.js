@@ -1,7 +1,7 @@
 // Middleware kiểm tra vai trò, SYSTEM_ADMIN luôn được phép.
 // requireRole('FAMILY_ADMIN') nghĩa là FAMILY_ADMIN trở lên (theo thứ bậc trong enums.js).
-//   - Chưa có danh tính (thiếu hoặc sai X-User-Id): 401
-//   - Có danh tính nhưng thiếu quyền: 403
+//   - Chưa có danh tính (thiếu hoặc sai X-User-Id): 401 UNAUTHENTICATED
+//   - Có danh tính nhưng thiếu quyền: 403 FORBIDDEN
 // Ví dụ: router.delete('/:id', requireRole(Roles.FAMILY_ADMIN), controller.remove);
 
 import { Roles, isValidEnum, roleAtLeast } from './enums.js';
@@ -17,7 +17,7 @@ export function requireRole(minRole) {
     const user = getUserContext(req);
     req.user = user;
     if (user.role === Roles.SYSTEM_ADMIN || roleAtLeast(user.role, minRole)) return next();
-    const err = user.userId ? AppError.forbidden() : AppError.unauthorized();
+    const err = user.userId ? AppError.forbidden() : AppError.unauthenticated();
     return ApiResponse.fromError(res, err);
   };
 }
